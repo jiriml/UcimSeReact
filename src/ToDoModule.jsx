@@ -3,15 +3,15 @@ import React, { useState } from "react";
 
 function Task({ index, selected, text, done, sendInfoUp }) {
     if (!selected) { // Standardní nevybraný task
-        return <li>
-            <span>{text}   </span>
+        return <li className="unselectedTask">
+            {done? (<span style={{opacity:"50%"}}>{text}   </span>):(<span>{text}   </span>)}
             <button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button>
             <button onClick={()=>sendInfoUp(index,"switchdone")}> {done? "Zrušit dokončení": "Dokončit"} </button>
             <button onClick={()=>sendInfoUp(index,"switchselect")}>Vybrat</button>
         </li>
     } else { // Vybraný task
-        return <li>
-            <span>{text}   </span>
+        return <li className="selectedTask">
+            {done? (<span style={{opacity:"50%"}}>{text}   </span>):(<span>{text}   </span>)}
             <button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button>
             <button onClick={()=>sendInfoUp(index,"switchdone")}> {done? "Zrušit dokončení": "Dokončit"} </button>
             <button onClick={()=>sendInfoUp(index,"switchselect")}>Zrušit vybrání</button>
