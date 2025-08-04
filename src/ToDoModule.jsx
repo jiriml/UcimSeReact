@@ -4,18 +4,16 @@ import React, { useState } from "react";
 function Task({ index, selected, text, done, sendInfoUp }) {
     if (!selected) { // Standardní nevybraný task
         return <li>
-            <p>{text}</p>
+            <span>{text}   </span>
             <button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button>
-            {{done} && <button onClick={()=>sendInfoUp(index,"switchdone")}>Dokončit</button>}
-            {(!{done}) && <button onClick={()=>sendInfoUp(index,"switchdone")}>Zrušit dokončení</button>}
+            <button onClick={()=>sendInfoUp(index,"switchdone")}> {done? "Zrušit dokončení": "Dokončit"} </button>
             <button onClick={()=>sendInfoUp(index,"switchselect")}>Vybrat</button>
         </li>
     } else { // Vybraný task
         return <li>
-            <p>{text}</p>
+            <span>{text}   </span>
             <button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button>
-            {{done} && <button onClick={()=>sendInfoUp(index,"switchdone")}>Dokončit</button>}
-            {(!{done}) && <button onClick={()=>sendInfoUp(index,"switchdone")}>Zrušit dokončení</button>}
+            <button onClick={()=>sendInfoUp(index,"switchdone")}> {done? "Zrušit dokončení": "Dokončit"} </button>
             <button onClick={()=>sendInfoUp(index,"switchselect")}>Zrušit vybrání</button>
         </li> 
     }
@@ -26,23 +24,24 @@ function ToDoList() {
 
     // Pole tasku bude ve formátu [text:str, selected:bool, done:bool]
 
-    const [data,setData] = useState({"text":"","index":-1,"tasks": []})
+    const [data,setData] = useState({"text":"Nevybráno","index":-1,"tasks": []})
 
     function recieveInfo(index,msg) {
         setData( prev => {
-            let tasksCopy = [...prev["tasks"]]
+            let tasksCopy = JSON.parse(JSON.stringify([...prev["tasks"]]))
             let newIndex = prev["index"]
             let newText = prev["text"]
             if (msg=="delete") {
                 if (prev["index"]==index) {
                     newIndex = -1;
+                    newText = "Nevybráno";
                 }
                 else if (prev["index"]>=index) {
-                    newIndex = prev["index"] -= 1;
+                    newIndex = prev["index"] - 1;
                 }
                 tasksCopy.splice(index,1);
             } else if (msg=="switchdone") {
-                tasksCopy[index][2] ^= 1;
+                tasksCopy[index][2] = tasksCopy[index][2]^1;
             } else if (msg=="switchselect") {
                 tasksCopy[index][1] = 1; 
                 if (prev["index"]!=-1) {tasksCopy[prev["index"]][1] = 0}
@@ -56,11 +55,7 @@ function ToDoList() {
         })
     }
     function addNewTask() {
- 
-
-
-        setData(prev=>{console.log(prev);return {"text":prev["text"],"index":prev["index"],"tasks":[...prev["tasks"], ["Nový úkol", 0, 0]]}});
-
+        setData(prev=>{return {"text":prev["text"],"index":prev["index"],"tasks":[...prev["tasks"], ["Nový úkol", 0, 0]]}});
         recieveInfo(data["tasks"].length,"switchselect");
     }
 
@@ -84,10 +79,8 @@ function ToDoList() {
         <input placeholder="Jméno tasku" value={data["text"]} onChange={onChangeText}></input><button onClick={()=>addNewTask()}>➕</button>
         <ol>
             {data["tasks"].map((task,index) => 
-                <div>
-                    asasas
-                    <Task index={index} selected={task[1]} done={task[2]} text={task[0]} sendInfoUp={(...args)=>{recieveInfo(...args)}}></Task>
-                </div>
+                <Task key={index} index={index} selected={task[1]} done={task[2]} text={task[0]} sendInfoUp={(...args)=>{recieveInfo(...args)}}></Task>
+
             )}
         </ol>
     
