@@ -3,30 +3,30 @@ import React, { useState } from "react";
 
 function Task({ index, selected, text, done, sendInfoUp }) {
     if (!selected) { // Standardní nevybraný task
-        return <li className="unselectedTask">
-            {done? (<span style={{opacity:"50%"}}>{text}   </span>):(<span>{text}   </span>)}
-            <button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button>
-            <button onClick={()=>sendInfoUp(index,"switchdone")}> {done? "Zrušit dokončení": "Dokončit"} </button>
-            <button onClick={()=>sendInfoUp(index,"switchselect")}>Vybrat</button>
-        </li>
+        return <tr className="unselectedTask">
+            <td>{done==1? (<span style={{opacity:"50%"}}>{text}   </span>):(<span>{text}   </span>)}</td>
+            <td><button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button></td>
+            <td><input type="range" min={1} max={3} value={1+done*2} onChange={(event)=>{sendInfoUp(index,"switchdone",[event.target.value])}}></input></td>
+            <td><button onClick={()=>sendInfoUp(index,"switchselect")}>Vybrat</button></td>
+        </tr>
     } else { // Vybraný task
-        return <li className="selectedTask">
-            {done? (<span style={{opacity:"50%"}}>{text}   </span>):(<span>{text}   </span>)}
-            <button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button>
-            <button onClick={()=>sendInfoUp(index,"switchdone")}> {done? "Zrušit dokončení": "Dokončit"} </button>
-            <button onClick={()=>sendInfoUp(index,"switchselect")}>Zrušit vybrání</button>
-        </li> 
+        return <tr className="selectedTask">
+            <td>{done==1? (<span style={{opacity:"50%"}}>{text}   </span>):(<span>{text}   </span>)}</td>
+            <td><button onClick={()=>sendInfoUp(index,"delete")}>Smazat</button></td>
+            <td><input type="range" min={1} max={3} value={1+done*2} onChange={(event)=>sendInfoUp(index,"switchdone",[event.target.value])}></input></td>
+            <td><button onClick={()=>sendInfoUp(index,"switchselect")}>Zrušit vybrání</button></td>
+        </tr> 
     }
 }
 
 
 function ToDoList() {
 
-    // Pole tasku bude ve formátu [text:str, selected:bool, done:bool]
+    // Pole tasku bude ve formátu [text:str, selected:bool, done:float]
 
     const [data,setData] = useState({"text":"Nevybráno","index":-1,"tasks": []})
 
-    function recieveInfo(index,msg) {
+    function recieveInfo(index,msg,extradata=[]) {
         setData( prev => {
             let tasksCopy = JSON.parse(JSON.stringify([...prev["tasks"]]))
             let newIndex = prev["index"]
@@ -41,7 +41,7 @@ function ToDoList() {
                 }
                 tasksCopy.splice(index,1);
             } else if (msg=="switchdone") {
-                tasksCopy[index][2] = tasksCopy[index][2]^1;
+                tasksCopy[index][2] = (extradata[0]-1)/2;
             } else if (msg=="switchselect") {
                 tasksCopy[index][1] = 1; 
                 if (prev["index"]!=-1) {tasksCopy[prev["index"]][1] = 0}
@@ -77,12 +77,13 @@ function ToDoList() {
     return (<>
         <h1>Test ToDo aplikace</h1>
         <input placeholder="Jméno tasku" value={data["text"]} onChange={onChangeText}></input><button onClick={()=>addNewTask()}>➕</button>
-        <ol>
+        <div style={{width:"100%",justifyContent:"center",display:"flex"}}><table>
+            <tbody><tr><td>Název</td><td>Smazat 🔽</td><td>Přidáno - Rozděláno - Doděláno</td><td>Vybrat 🔽</td></tr>
             {data["tasks"].map((task,index) => 
                 <Task key={index} index={index} selected={task[1]} done={task[2]} text={task[0]} sendInfoUp={(...args)=>{recieveInfo(...args)}}></Task>
 
-            )}
-        </ol>
+            )}</tbody>
+        </table></div>
     
     
     </>)
