@@ -56,3 +56,11 @@ button{
 .unselectedTask button{
   background-color: #1a1a1a;
 }
+
+li {
+  background-color: #202020;
+  margin-bottom: 3px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
