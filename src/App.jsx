@@ -4,6 +4,7 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import TodoList from './componets/TodoList';
+import TodoItem from "./componets/TodoList/TodoItem.jsx";
 import TodoForm from "./componets/ToDoForm";
 import { useTodos, useForm } from "./hooks";
 import { TodosContext } from "./context/TodosContext.jsx";
@@ -19,6 +20,7 @@ function App() {
   }
 
   const shared = {
+    TodoItem : TodoItem,
     TodoList: TodoList,
     TodoForm: TodoForm,
     useTodos: useTodos({getShared}),

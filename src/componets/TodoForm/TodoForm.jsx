@@ -5,7 +5,6 @@ import { useContext } from "react";
 
 const TodoForm = ({}) => {
     const shared = useContext(TodosContext);
-    console.log(shared)
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = (data) => {

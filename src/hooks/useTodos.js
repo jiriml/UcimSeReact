@@ -32,7 +32,6 @@ const useTodos = ({getShared}) => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
             validated["todos"] = [...validated["todos"],validateRow(row)];
-            console.log(JSON.stringify(validated));
             return validated;
         })
     }
