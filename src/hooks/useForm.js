@@ -1,10 +1,14 @@
 import { useContext } from "react";
 import { TodosContext } from "@context/TodosContext";
+import { useNavigate } from "react-router-dom";
+
+
 const useForm = ({getShared}) => {
+    const navigate = useNavigate();
     const onSubmit = (data) => {
         let shared = getShared()
         shared.useTodos.addTodo([data["name"],0,[]])
-        //console.log(data);
+        shared.redirect("/table")
     }
     return {onSubmit} // Předá užitečné fce
 }

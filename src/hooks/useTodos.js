@@ -3,8 +3,6 @@ import { useContext } from "react";
 import { TodosContext } from "@context/TodosContext";
 
 const useTodos = ({getShared}) => {
-    const shared = getShared();
-    console.log(shared);
     const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[]});
     /*
     |--todos

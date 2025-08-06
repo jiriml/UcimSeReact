@@ -11,6 +11,7 @@ import { TodosContext } from "./context/TodosContext.jsx";
 
 
 function App() {
+  const navigate = useNavigate()
   const getShared = () => {
     try {
       return shared 
@@ -21,14 +22,15 @@ function App() {
     TodoList: TodoList,
     TodoForm: TodoForm,
     useTodos: useTodos({getShared}),
-    useForm: useForm({getShared})
+    useForm: useForm({getShared}),
+    redirect: (...a) => {return navigate(...a)}
   }
 
 
 
   return (
-    <TodosContext.Provider value={shared}>
-      <BrowserRouter>
+    
+      <TodosContext.Provider value={shared}>
         <Link to="/addNewItem">Přidat</Link> | {" "}
         <Link to="/table">Tabulka</Link>
         <Routes>
@@ -37,9 +39,9 @@ function App() {
           <Route path="/table" element={<TodoList />} />
           <Route path="/bigTable" element={<p>Tato stránka ješté není doděláná</p>} />
         </Routes>
-      </BrowserRouter>
+      </TodosContext.Provider>
       
-    </TodosContext.Provider>
+   
   )
 }
 
