@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useContext } from "react";
+import { TodosContext } from "@context/TodosContext";
 
-const useTodos = () => {
+const useTodos = ({getShared}) => {
+    const shared = getShared();
+    console.log(shared);
     const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[]});
     /*
     |--todos
@@ -15,7 +19,7 @@ const useTodos = () => {
     const validateRow = (row) => {
         let validated = [String(row[0]),String(row[1]), (()=>{let res = {};for (let thing of todosdata["validVars"]){res[thing]=""}return res})() ]
         for (let key of Object.keys(row[2])) {
-            if (key in Object.keys(validated[2])) {
+            if (Object.keys(validated[2]).includes(key)) {
                 validated[2][key] = row[2][key]
             }
         }
@@ -30,6 +34,7 @@ const useTodos = () => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
             validated["todos"] = [...validated["todos"],validateRow(row)];
+            console.log(JSON.stringify(validated));
             return validated;
         })
     }
@@ -39,11 +44,13 @@ const useTodos = () => {
     const validateAll = () => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
-            for (let index = 0;index<validated["todos"]; index++) {
+            for (let index = 0;index<validated["todos"].length; index++) {
                 validated["todos"][index] = validateRow(validated["todos"][index]);
             }
             return validated;
         })
     }
+
+    return { validateRow, getTodos, addTodo, getValidVars, validateAll }
 }
 export default useTodos;

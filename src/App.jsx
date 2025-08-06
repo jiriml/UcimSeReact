@@ -11,13 +11,17 @@ import { TodosContext } from "./context/TodosContext.jsx";
 
 
 function App() {
-
+  const getShared = () => {
+    try {
+      return shared 
+    } catch (e) { return {}}
+  }
 
   const shared = {
     TodoList: TodoList,
     TodoForm: TodoForm,
-    useTodos: useTodos,
-    useForm: useForm
+    useTodos: useTodos({getShared}),
+    useForm: useForm({getShared})
   }
 
 

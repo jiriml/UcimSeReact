@@ -4,16 +4,15 @@ import { TodosContext } from "@context/TodosContext";
 import { useContext } from "react";
 
 const TodoForm = ({}) => {
-    const shared = useContext(TodosContext)
+    const shared = useContext(TodosContext);
+    console.log(shared)
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-
     const onSubmit = (data) => {
-        shared.useForm().onSubmit(data);
+        shared.useForm.onSubmit(data);
     };
 
     return (
-        
         <>
         <h1>Přidání nového úkolu</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -23,8 +22,6 @@ const TodoForm = ({}) => {
 
         </form>
         </>
-
-
     )
 }
 
