@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { TodosContext } from "@context/TodosContext";
 
 const useTodos = ({getShared}) => {
-    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[]});
+    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[],"selectedIndex":-1});
     /*
     |--todos
     |  +--*jednotlivé řádky [název, status, pole popisů]
@@ -11,6 +11,8 @@ const useTodos = ({getShared}) => {
     |--validVars
     |  +--*stringy validních popisů
     |
+    |--selectedIndex
+    |  +-- číslo indexu int
     */
 
     // redux? Co to je?
@@ -30,9 +32,17 @@ const useTodos = ({getShared}) => {
     }
 
 
-    const setTodoVar = () => {
+    const setTodoVar = (index, key, value) => {
         setTodosdata(prev=>{
-            
+            let copied = JSON.parse(JSON.stringify(prev));
+            if (key.startsWith("vv$")) {
+                try {copied["todos"][index][2][parseInt(key.slice(3))]=value}catch(e){}
+            } else if (key=="name") {
+                try{copied["todos"][index][0]=value}catch(e){}
+            } else if (key=="status") {
+                try{copied["todos"][index][1]=value}catch(e){}
+            }
+            return copied;
         })
     }
 
@@ -67,6 +77,21 @@ const useTodos = ({getShared}) => {
         })
     }
 
+    const switchSelect = (index) => {
+        setTodosdata(prev=>{
+            let copied = JSON.parse(JSON.stringify(prev));
+            if (index==copied["selectedIndex"]) {
+                copied["selectedIndex"] = -1;
+            } else {
+                copied["selectedIndex"] = index;
+            }
+            return copied;
+        })
+    }
+    const getSelected = () => {
+        return todosdata["selectedIndex"];
+    }
+
     const addTodo = (row) => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
@@ -87,6 +112,6 @@ const useTodos = ({getShared}) => {
         })
     }
 
-    return { validateRow, getTodos, addTodo, getValidVars, validateAll, unityVars, deleteTodo, addValidVar, deleteValidVar }
+    return { validateRow, getTodos, addTodo, getValidVars, validateAll, unityVars, deleteTodo, addValidVar, deleteValidVar, setTodoVar, getSelected, switchSelect }
 }
 export default useTodos;

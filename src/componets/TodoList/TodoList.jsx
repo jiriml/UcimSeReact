@@ -10,7 +10,7 @@ const TodoList = () => {
         <h1>Test ToDo aplikace</h1>
         <div style={{width:"100%",justifyContent:"center",display:"flex"}}><table>
             <tbody>
-                <tr><td>Název</td><td>Smazat 🔽</td><td>Vybrat 🔽</td><td>Přidáno - Rozděláno - Doděláno</td><td>|</td>
+                <tr><td>Název</td><td>Smazat 🔽</td><td>Upravit 🔽</td><td>Přidáno - Rozděláno - Doděláno</td><td>|</td>
                     {shared.useTodos.getValidVars().map((task,index) => 
                         <td key={index} >{task}</td>
                     )}
