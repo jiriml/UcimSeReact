@@ -15,17 +15,17 @@ const useTodos = ({getShared}) => {
     |  +-- číslo indexu int
     */
 
-    // redux? Co to je?
-    const validateRow = (row) => {
-        let validated = [String(row[0]),String(row[1]), [...row[2],...Array(todosdata["validVars"].length).fill("")].slice(0,todosdata["validVars"].length)]
+    const validateRow = (row,reqlen=-1) => {
+        let l = (reqlen>0)? reqlen: todosdata["validVars"].length;
+        let validated = [String(row[0]),String(row[1]), [...row[2],...Array(l).fill("")].slice(0,l)]
         return validated;
     }
 
     const unityVars = (vars) => {
         let newVars = Array(todosdata["validVars"].length).fill("");
-        for (let key of Object.keys(vars)) {
-            if (todosdata["validVars"].indexOf(key)>-1) {
-                newVars[todosdata["validVars"].indexOf(key)] = vars[key]
+       for (let key of Object.keys(vars)) {
+            if (parseInt(key)>-1) {
+                newVars[parseInt(key)] = vars[parseInt(key)]
             }
         }
         return newVars;
@@ -63,6 +63,9 @@ const useTodos = ({getShared}) => {
             let copied = JSON.parse(JSON.stringify(prev));
             let findex = index<0? Infinity : Math.ceil(index);
             copied["validVars"] = [...copied["validVars"].slice(0,findex),...copied["validVars"].slice(findex+1)];
+            for (let i=0;i<copied["todos"].length;i++) {
+                copied["todos"][i][2] = [...copied["todos"][i][2].slice(0,findex),...copied["todos"][i][2].slice(findex+1)]
+            }
             return copied;
         })
     }
@@ -111,7 +114,7 @@ const useTodos = ({getShared}) => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
             for (let index = 0;index<validated["todos"].length; index++) {
-                validated["todos"][index] = validateRow(validated["todos"][index]);
+                validated["todos"][index] = validateRow(validated["todos"][index],prev["validVars"].length);
             }
             return validated;
         })

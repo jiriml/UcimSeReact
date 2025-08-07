@@ -14,7 +14,6 @@ const TodoForm = ({}) => {
         shared.useTodos.deleteValidVar(index);
     }
     const onRed = () => {
-        console.log("TRy")
         shared.useForm.onAddVar();
     }
     return (
@@ -26,7 +25,7 @@ const TodoForm = ({}) => {
             <h3>Vlastní proměnné:</h3>
             {shared.useTodos.getValidVars().map((validVar,index)=>
                 <div key={index}><label htmlFor={"vv$"+String(index)}>{validVar}{" ... "}</label><button type="button" onClick={()=>{delcmd(index)}}>🗑</button><br/>
-                <input id={"vv$"+String(index)} {...register("vv$"+validVar,{})} /></div>
+                <input id={"vv$"+String(index)} {...register("vv$"+String(index),{})} /></div>
             )}
             <button type="button" onClick={()=>{shared.redirect("/addVar")}}>Přidat novou proměnnou</button><br/>
             <button type="submit" >Přidat ➕</button>
