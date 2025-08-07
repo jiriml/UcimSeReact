@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { TodosContext } from "@context/TodosContext";
 
 const useTodos = ({getShared}) => {
-    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":["ej"]});
+    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[]});
     /*
     |--todos
     |  +--*jednotlivé řádky [název, status, pole popisů]
@@ -27,6 +27,13 @@ const useTodos = ({getShared}) => {
             }
         }
         return newVars;
+    }
+
+
+    const setTodoVar = () => {
+        setTodosdata(prev=>{
+            
+        })
     }
 
     const getTodos = () => {
