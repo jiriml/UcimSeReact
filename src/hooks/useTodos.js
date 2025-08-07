@@ -71,6 +71,11 @@ const useTodos = ({getShared}) => {
         setTodosdata(prev=>{
             
             let copied = JSON.parse(JSON.stringify(prev));
+            if (copied["selecetedIndex"]==index){
+                copied["selectedIndex"]=-1;
+            } else if (copied["selectedIndex"]>index) {
+                copied["selectedIndex"] = copied["selectedIndex"] -1;
+            }
             let findex = index<0? Infinity : Math.ceil(index);
             copied["todos"] = [...copied["todos"].slice(0,findex),...copied["todos"].slice(findex+1)];
             return copied;
