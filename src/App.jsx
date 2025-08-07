@@ -6,7 +6,8 @@ import './App.css';
 import TodoList from './componets/TodoList';
 import TodoItem from "./componets/TodoList/TodoItem.jsx";
 import TodoForm from "./componets/ToDoForm";
-import { useTodos, useForm } from "./hooks";
+import AddVarForm from "./componets/AddVarForm";
+import { useTodos, useForm, useAddVar } from "./hooks";
 import { TodosContext } from "./context/TodosContext.jsx";
 
 
@@ -20,11 +21,13 @@ function App() {
   }
 
   const shared = {
+    AddVarForm: AddVarForm,
     TodoItem : TodoItem,
     TodoList: TodoList,
     TodoForm: TodoForm,
     useTodos: useTodos({getShared}),
     useForm: useForm({getShared}),
+    useAddVar: useAddVar({getShared}),
     redirect: (...a) => {return navigate(...a)}
   }
 
@@ -33,12 +36,15 @@ function App() {
   return (
     
       <TodosContext.Provider value={shared}>
-        <Link to="/addNewItem">Přidat</Link> | {" "}
+        <Link to="/addVar">Přidat proměnnou</Link> | {" "}
+        <Link to="/addNewItem">Přidat úkol</Link> | {" "}
         <Link to="/table">Tabulka</Link>
+        
         <Routes>
           <Route path="/" element={<Navigate to="/addNewItem" replace />}/>
           <Route path="/addNewItem" element={<TodoForm />}/>
           <Route path="/table" element={<TodoList />} />
+          <Route path="addVar" element={<AddVarForm />}/>
           <Route path="/bigTable" element={<p>Tato stránka ješté není doděláná</p>} />
         </Routes>
       </TodosContext.Provider>

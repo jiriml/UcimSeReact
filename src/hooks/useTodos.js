@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { TodosContext } from "@context/TodosContext";
 
 const useTodos = ({getShared}) => {
-    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[]});
+    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":["ej"]});
     /*
     |--todos
     |  +--*jednotlivé řádky [název, status, pole popisů]
@@ -15,19 +15,51 @@ const useTodos = ({getShared}) => {
 
     // redux? Co to je?
     const validateRow = (row) => {
-        let validated = [String(row[0]),String(row[1]), (()=>{let res = {};for (let thing of todosdata["validVars"]){res[thing]=""}return res})() ]
-        for (let key of Object.keys(row[2])) {
-            if (Object.keys(validated[2]).includes(key)) {
-                validated[2][key] = row[2][key]
-            }
-        }
+        let validated = [String(row[0]),String(row[1]), [...row[2],...Array(todosdata["validVars"].length).fill("")].slice(0,todosdata["validVars"].length)]
         return validated;
     }
 
+    const unityVars = (vars) => {
+        let newVars = Array(todosdata["validVars"].length).fill("");
+        for (let key of Object.keys(vars)) {
+            if (todosdata["validVars"].indexOf(key)>-1) {
+                newVars[todosdata["validVars"].indexOf(key)] = vars[key]
+            }
+        }
+        return newVars;
+    }
 
     const getTodos = () => {
         return todosdata["todos"];
     }
+
+    const addValidVar = (name) => {
+        setTodosdata(prev=>{
+            let copied = JSON.parse(JSON.stringify(prev));
+            copied["validVars"] = [...copied["validVars"],name];
+            return copied;
+        });
+        validateAll();
+    }
+    const deleteValidVar = (index) => {
+        setTodosdata(prev=>{
+            let copied = JSON.parse(JSON.stringify(prev));
+            let findex = index<0? Infinity : Math.ceil(index);
+            copied["validVars"] = [...copied["validVars"].slice(0,findex),...copied["validVars"].slice(findex+1)];
+            return copied;
+        })
+    }
+
+    const deleteTodo = (index) => {
+        setTodosdata(prev=>{
+            
+            let copied = JSON.parse(JSON.stringify(prev));
+            let findex = index<0? Infinity : Math.ceil(index);
+            copied["todos"] = [...copied["todos"].slice(0,findex),...copied["todos"].slice(findex+1)];
+            return copied;
+        })
+    }
+
     const addTodo = (row) => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
@@ -48,6 +80,6 @@ const useTodos = ({getShared}) => {
         })
     }
 
-    return { validateRow, getTodos, addTodo, getValidVars, validateAll }
+    return { validateRow, getTodos, addTodo, getValidVars, validateAll, unityVars, deleteTodo, addValidVar, deleteValidVar }
 }
 export default useTodos;
