@@ -2,7 +2,6 @@ import { TodosContext } from "../../context/TodosContext";
 import { useContext } from "react";
 
 const TodoItem = ({ index, text, status, sendInfoUp, vars }) => {
-    console.log(vars)
     const shared = useContext(TodosContext);
     const selected = shared.useTodos.getSelected();
 
