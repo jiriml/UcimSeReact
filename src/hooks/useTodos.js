@@ -64,7 +64,21 @@ const useTodos = ({getShared}) => {
     }
 
     const getTodos = () => {
-        return todosdata["todos"];
+        let result = []
+        result = todosdata["todos"].filter((v)=>{
+            if (todosdata["filter"]["status"][0]) {
+                if (!(todosdata["filter"]["status"][1].includes(String(v[1])))) {return false}
+            }
+            for (let filindex=0;filindex<todosdata["validVars"].length;filindex++) {
+                if (todosdata["filter"]["customs"][filindex][0]) {
+                    if (!(todosdata["filter"]["customs"][filindex][1].includes(v[2][filindex]))) {return false}
+                }
+            }
+            
+            return true;
+        })
+        console.log(result);
+        return result;
     }
 
     const addValidVar = (name) => {

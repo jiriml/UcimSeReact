@@ -99,7 +99,6 @@ const useFilter = ({getShared}) => {
         }
         shared.useTodos.setFilter(fixFilter(dat));
     }
-
     return {toogleFilter ,recieveAction,getForUi,fixFilter};
 
 }
