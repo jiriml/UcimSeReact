@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { TodosContext } from "@context/TodosContext";
 
 const useTodos = ({getShared}) => {
-    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[],"selectedIndex":-1});
+    const [todosdata, setTodosdata] = useState({"todos":[],"validVars":[],"selectedIndex":-1,"filter":{"status":[false,[],[]],"customs":[]}});
     /*
     |--todos
     |  +--*jednotlivé řádky [název, status, pole popisů]
@@ -13,6 +13,22 @@ const useTodos = ({getShared}) => {
     |
     |--selectedIndex
     |  +-- číslo indexu int
+    |
+    |--Filter
+    |  |-- ["status"]
+    |  |   |-- [0] Filtrovat Ano/Ne
+    |  |   +--[1]
+    |  |   |   +-- *[povolené hodnoty]
+    |  |   +--[2]
+    |  |       +-- *[nepovolené hodnoty]
+    |  +--[ "customs" ]
+    |      |
+    |      |--- *[index podle validVars] název
+                |-- [0] Filtrovat Ano/Ne
+                |-- [1] Povolené hodnoty
+                |-- [2] Nepovolené hodnoty
+               
+
     */
 
     const validateRow = (row,reqlen=-1) => {
@@ -42,6 +58,7 @@ const useTodos = ({getShared}) => {
             } else if (key=="status") {
                 try{copied["todos"][index][1]=value}catch(e){}
             }
+            copied["filter"] = getShared().useFilter.fixFilter(copied); //Oprava filtrus
             return copied;
         })
     }
@@ -54,6 +71,7 @@ const useTodos = ({getShared}) => {
         setTodosdata(prev=>{
             let copied = JSON.parse(JSON.stringify(prev));
             copied["validVars"] = [...copied["validVars"],name];
+            copied["filter"] = getShared().useFilter.fixFilter(copied); //Oprava filtru
             return copied;
         });
         validateAll();
@@ -65,6 +83,7 @@ const useTodos = ({getShared}) => {
             copied["validVars"] = [...copied["validVars"].slice(0,findex),...copied["validVars"].slice(findex+1)];
             for (let i=0;i<copied["todos"].length;i++) {
                 copied["todos"][i][2] = [...copied["todos"][i][2].slice(0,findex),...copied["todos"][i][2].slice(findex+1)]
+                copied["filter"]["customs"] = [...copied["filter"]["customs"].slice(0,findex),...copied["filter"]["customs"].slice(findex+1)]
             }
             return copied;
         })
@@ -81,6 +100,7 @@ const useTodos = ({getShared}) => {
             }
             let findex = index<0? Infinity : Math.ceil(index);
             copied["todos"] = [...copied["todos"].slice(0,findex),...copied["todos"].slice(findex+1)];
+            copied["filter"] = getShared().useFilter.fixFilter(copied); //Oprava filtru
             return copied;
         })
     }
@@ -104,6 +124,7 @@ const useTodos = ({getShared}) => {
         setTodosdata(prev=>{
             let validated = JSON.parse(JSON.stringify(prev));
             validated["todos"] = [...validated["todos"],validateRow(row)];
+            validated["filter"] = getShared().useFilter.fixFilter(validated); //Oprava filtru
             return validated;
         })
     }
@@ -119,7 +140,17 @@ const useTodos = ({getShared}) => {
             return validated;
         })
     }
+    const getAllData = () => {
+        return JSON.parse(JSON.stringify(todosdata));
+    }
+    const setFilter = (dat) => {
+        setTodosdata(prev=>{
+            let result = JSON.parse(JSON.stringify(prev));
+            result["filter"] = dat;
+            return result;
+        })
+    }
 
-    return { validateRow, getTodos, addTodo, getValidVars, validateAll, unityVars, deleteTodo, addValidVar, deleteValidVar, setTodoVar, getSelected, switchSelect }
+    return { setFilter, validateRow, getTodos, addTodo, getValidVars, validateAll, unityVars, deleteTodo, addValidVar, deleteValidVar, setTodoVar, getSelected, switchSelect, getAllData }
 }
 export default useTodos;
