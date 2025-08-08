@@ -14,7 +14,13 @@ const FilterDom = ({}) => {
                     {shared.useFilter.getForUi().map((p,key)=>
                     <td key={key}>
                         <h3>{p[0]}</h3>
-                        Filtrovat: {p[1]?<input type="checkbox" onChange={(event)=>{shared.useFilter.toogleFilter(key-1,event.target.checked)}} checked/>:<input type="checkbox" onChange={(event)=>{shared.useFilter.toogleFilter(key-1,event.target.checked)}} />}
+                        Filtrovat: <input type="checkbox" onChange={(event)=>{shared.useFilter.toogleFilter(key-1,event.target.checked)}} checked={!!p[1]}/><br/>
+                        {p[2].map((v,k)=>
+                            <>{v}:<input type="checkbox" checked={true} onChange={()=>{shared.useFilter.recieveAction(key-1,v,false)}}/><br/></>
+                        )}
+                        {p[3].map((v,k)=>
+                            <>{v}:<input type="checkbox" checked={false} onChange={()=>{shared.useFilter.recieveAction(key-1,v,true)}}/><br/></>
+                        )}
                     </td>
                     
                     )}

@@ -7,11 +7,11 @@ const useFilter = ({getShared}) => {
 
         if (oldFilter["status"][0]) { //status se řadil
             newFilter["status"][0]=true;
-            let allowed = {0:true,0.5:true,1:true}
-            for (let pair of Object.values(oldFilter["status"][1])) {
-                if (Object.keys(allowed).includes(pair[0]) && allowed[pair[0]] && pair[1]) {
-                    allowed[pair[0]] = false;
-                    newFilter["status"][1].push(pair[0]);
+            let allowed = {"0":true,"0.5":true,"1":true}
+            for (let thing of Object.values(oldFilter["status"][1])) {
+                if (Object.keys(allowed).includes(thing) && allowed[thing]) {
+                    allowed[thing] = false;
+                    newFilter["status"][1].push(thing);
                 }
             }
             for (let key of Object.keys(allowed)) {
@@ -21,21 +21,22 @@ const useFilter = ({getShared}) => {
             }
         }
         for (let index=0;index<oldFilter["customs"].length;index++) { if (oldFilter["customs"][index][0])  {
-                let allowed = {}
-                for (let record of Object.values("todos")) {
-                    allowed[record[2][index]] = true;
+            newFilter["customs"][index][0] = true;
+            let allowed = {}
+            for (let record of Object.values(oldData["todos"])) {
+                allowed[record[2][index]] = true;
+            }
+            for (let thing of Object.values(oldFilter["customs"][index][1])) {
+                if (Object.keys(allowed).includes(thing) && allowed[thing]) {
+                    allowed[thing] = false;
+                    newFilter["customs"][index][1].push(thing);
                 }
-                for (let pair of Object.values(oldFilter["customs"][index][1])) {
-                    if (Object.keys(allowed).includes(pair[0]) && allowed[pair[0]]) {
-                        allowed[pair[0]] = false;
-                        newFilter["customs"][index][1].push(pair[0]);
-                    }
+            }
+            for (let key of Object.keys(allowed)) {
+                if (allowed[key]) {
+                    newFilter["customs"][index][2].push(key);
                 }
-                for (let key of Object.keys(allowed)) {
-                    if (allowed[key]) {
-                        newFilter["customs"][index][2].push(key);
-                    }
-                }
+            }
         }}
         return newFilter;
 
@@ -63,20 +64,14 @@ const useFilter = ({getShared}) => {
                 subresult[2].sort();
                 subresult[3].sort();
                 result.push(subresult);
-
             }
-            
-
         }
         return result;
-
     }
 
-
-
     const toogleFilter = (k,v) => {
-        let shared = getShared()
-        let dat = shared.useTodos.getAllData()
+        let shared = getShared();
+        let dat = shared.useTodos.getAllData();
         if (k<0) {
             dat["filter"]["status"][0] = v;
         } else {
@@ -84,8 +79,25 @@ const useFilter = ({getShared}) => {
         }
         shared.useTodos.setFilter(fixFilter(dat));
     }
-    const recieveAction = (t,value) => {
-
+    const recieveAction = (k1,k2,value) => {
+        let shared = getShared();
+        let dat = shared.useTodos.getAllData();
+        if (k1<0) {
+            if (dat["filter"]["status"][1].indexOf(k2)>-1) {
+                value?null:dat["filter"]["status"][1].splice(dat["filter"]["status"][1].indexOf(k2),1);
+            } else if (value) {dat["filter"]["status"][1].push(k2)}
+            if (dat["filter"]["status"][2].indexOf(k2)>-1) {
+                value?dat["filter"]["status"][2].splice(dat["filter"]["status"][2].indexOf(k2),1):null;
+            } else if (!value) {dat["filter"]["status"][2].push(k2)}
+        } else {
+            if (dat["filter"]["customs"][k1][1].indexOf(k2)>-1) {
+                value?null:dat["filter"]["customs"][k1][1].splice(dat["filter"]["customs"][k1][1].indexOf(k2),1);
+            } else if (value) {dat["filter"]["customs"][k1][1].push(k2)}
+            if (dat["filter"]["customs"][k1][2].indexOf(k2)>-1) {
+                value?dat["filter"]["customs"][k1][2].splice(dat["filter"]["customs"][k1][2].indexOf(k2),1):null;
+            } else if (!value) {dat["filter"]["customs"][k1][2].push(k2)}
+        }
+        shared.useTodos.setFilter(fixFilter(dat));
     }
 
     return {toogleFilter ,recieveAction,getForUi,fixFilter};

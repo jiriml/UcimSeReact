@@ -1,4 +1,4 @@
-import { TodosContext } from "../../context/TodosContext";
+import { TodosContext } from "@context/TodosContext";
 import { useContext } from "react";
 
 const TodoItem = ({ index, text, status, sendInfoUp, vars }) => {
